@@ -1,0 +1,7 @@
+# admin1 = ws.auth_geth("0x280c28e82f000827c8a259ba2a57bd66e89fc54c", '123')
+# admin2 = ws.auth_geth("0x32a1e697d8d1f0297550634d3be2e477ac0f2695", '123')
+# lib1 = ws.auth_geth("0x26ca8e2344cec1ac3ac5765e6f2d74aa688bdf4a", '123')
+# lib2 = ws.auth_geth("0xe500226ad7c109273cb681ec9ba2c9a18d330409", '123')
+# lib = ws.auth_geth("0xf3c072b4ec02073e34d8f9630a7d78117f7ef28f", '123')
+user = ws.auth_geth("0x443D6370ad19A2b695792BAF9A18345001d4e8A7", '123')
+0x3BC57d8A3ce6f0Cd86bcc67e903fbEC384052f45

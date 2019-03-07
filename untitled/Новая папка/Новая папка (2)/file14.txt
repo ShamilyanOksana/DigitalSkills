@@ -1,0 +1,20 @@
+>>> web3.admin.peers
+[
+    {
+        'caps': ['eth/63'],
+        'id': '146e8e3e2460f1e18939a5da37c4a79f149c8b9837240d49c7d94c122f30064e07e4a42ae2c2992d0f8e7e6f68a30e7e9ad31d524349ec9d17effd2426a37b40',
+        'name': 'Geth/v1.4.10-stable/windows/go1.6.2',
+        'network': {
+            'localAddress': '10.0.3.115:64478',
+            'remoteAddress': '72.208.167.127:30303',
+        },
+        'protocols': {
+            'eth': {
+                'difficulty': 17179869184,
+                'head': '0xd4e56740f876aef8c010b86a40d5f56745a118d0906a34e69aec8c0db1cb8fa3',
+                'version': 63,
+            },
+        }
+    },
+    ...
+]

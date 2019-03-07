@@ -1,0 +1,184 @@
+pragma solidity ^0.5.0;
+contract Store {
+
+    struct User {
+        address user_address;
+        //string name;
+        uint category;
+        //1 - прочая тайна
+        //2 - коммерческая тайна
+        //3 - общедоступно
+        uint role;
+        //0 - бан
+        //1 - адмиг
+        //2 - библиотекарь
+        //3 - обычный пользователь
+        uint open_key;
+    }
+    
+    struct File {
+        uint file_id;
+        string title;
+        string  author;
+        uint tipe;
+        uint category;
+        
+        string  file_hash;
+        uint[] viewtime;
+        address[] viewers;
+        bool[] viewstatus;
+    }
+    
+    struct Request {
+        address user_address;
+        uint new_role;
+        uint new_category;
+    }
+    
+    Request[] requests;
+    File[] files;
+    User[] users;
+    
+    modifier isAdmin {
+        uint user_id = get_user_id_by_user_address(msg.sender);
+        require(users[user_id].role == 1, "Вы не являетесь администратором системы");
+        _;
+    }    
+      
+    //Создать 2 админа, 2 библиотекаря
+    function admin_genesis(address admin_address, uint open_key) public {
+        users.push(User(admin_address, 3, 1, open_key));
+    }
+    function libr_genesis(address libr_address, uint open_key) public {
+        users.push(User(libr_address, 0, 2, open_key));
+    }
+    
+    //Получить номер пользователя по адресу - Работает
+    function get_user_id_by_user_address(address user_address) public view returns(uint user_id) {
+        for (uint i=0; i<users.length; i++) {
+            if (users[i].user_address == user_address) {
+                return i;
+            }
+        }
+        return 0;
+    }
+    
+    //Получить информацию о пользователе по его адресу - Работает
+    function get_user_by_user_address(address user_address) public view returns(address, uint, uint/*, string*/) {
+        for (uint i=0; i<users.length; i++) {
+            if (users[i].user_address == user_address) {
+                return(users[i].user_address, users[i].category, users[i].role/*, users[i].open_key*/);
+            }
+        }
+    }
+    
+    //Получить количество запросов - Работает
+    function get_request_number() public view returns(uint) {
+        return requests.length;
+    }
+    
+    //Получить конкретный запрос
+    function get_request_by_request_number(uint request_number) public view returns(address, uint, uint) {
+        return(requests[request_number].user_address, requests[request_number].new_role, requests[request_number].new_category);
+    }
+    
+    //Получить номер запроса новой роли по адресу пользователя и по указаной роли - Работает
+    function get_role_request_id_by_user_address(address user_address, uint new_role) public view returns(uint) {
+        for (uint i=0; i<requests.length; i++) {
+            if (requests[i].user_address == user_address && requests[i].new_role == new_role) {
+                return i;
+            }
+        }
+    }
+    
+    //Получить номер запроса новой категории по адресу пользователя -
+    function get_category_request_id_by_user_address(address user_address) public view returns(uint) {
+        for (uint i=0; i<requests.length; i++) {
+            if (requests[i].user_address == user_address && requests[i].new_category == 2) {
+                return i;
+            }
+        }
+    }
+    
+    
+    
+    //Регистрация в системе - Работает
+    function check_in(uint open_key) public {
+        uint user_id = get_user_id_by_user_address(msg.sender);
+        if (user_id == 0) {
+            users.push(User(msg.sender, 3, 3, open_key));
+        }
+        else {
+            require(users[user_id].role != 0, "Вы были заблокированны администратором");
+            users[user_id].open_key = open_key;
+            users[user_id].category = 3;
+            users[user_id].role = 3;
+        }
+    }
+    
+    //Удаление из системы - Работает
+    function delete_user(address user_address) public isAdmin {
+        users[get_user_id_by_user_address(user_address)].role = 0;
+    }
+    
+    //Запросить права администратора - Работает
+    function request_admin_rights() public {
+        uint user_id = get_user_id_by_user_address(msg.sender);
+        require(users[user_id].role == 3, "Вам не может быть назначена данная роль");
+        requests.push(Request(msg.sender, 1, 0));
+    }
+    
+    //Запросить права библиотекаря - Работает
+    function request_librarian_rights() public {
+        uint user_id = get_user_id_by_user_address(msg.sender);
+        require(users[user_id].role == 3, "Вам не может быть назначена данная роль");
+        requests.push(Request(msg.sender, 2, 0));
+    }
+    
+    //Установить новые права пользователю - Работает
+    function confirm_rights(address user_address, uint new_role) public isAdmin {
+        uint request_id = get_role_request_id_by_user_address(user_address, new_role);
+        uint user_id = get_user_id_by_user_address(user_address);
+        users[user_id].role = 2;
+        delete requests[request_id];
+    }
+    
+    //Отказать в установлении новых прав - Работает
+    function refuse_rights(address user_address, uint new_role) public isAdmin {
+        uint request_id = get_role_request_id_by_user_address(user_address, new_role);
+        delete requests[request_id];
+    }
+    
+    
+    
+    //Запросить доступ к категории 1
+    function request_access_to_other() public {
+        uint user_id = get_user_id_by_user_address(msg.sender);
+        require(users[user_id].category == 1, "Вы уже имеете доступ к этой категории");
+        requests.push(Request(msg.sender, 0, 1));
+    }
+    
+    //Разрешить доступ к первой категории - Работает
+    function confirm_access_to_other(address user_address) public isAdmin {
+        uint request_id = get_category_request_id_by_user_address(user_address);
+        uint user_id = get_user_id_by_user_address(user_address);
+        require(msg.sender != user_address, "Вы не можете предоставить доступ к прочим файлам самому себе");
+        users[user_id].category = 1;
+        delete(requests[request_id]);
+    }
+    
+    //Отказать в доступе к первой категории - Работает
+    function refuse_access_to_other(address user_address) public isAdmin {
+        uint request_id = get_category_request_id_by_user_address(user_address);
+        require(msg.sender != user_address, "Вы не можете отказать в доступе к прочим файлам самому себе");
+        delete(requests[request_id]);
+    }
+    
+    
+    
+    //Занести файл в архив
+    
+    
+    
+    
+}

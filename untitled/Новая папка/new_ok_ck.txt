@@ -1,0 +1,20 @@
+def new_ok_ck(self, name):
+	'''
+	если НЕТ аккаунта в системе
+	генерируем открытый и закрытый ключ
+	:return:
+	'''
+	(publikKey, privatKey) = rsa.newkeys(512)
+	str_privatKey = {'e': privatKey.e, 'd': privatKey.d, 'n': privatKey.n, 'p': privatKey.p, 'q': privatKey.q}
+	str_privatKey = json.dumps(str_privatKey)
+	str_publicKey = {'e': publikKey.e, 'n': publikKey.n}
+	str_publicKey = json.dumps(str_publicKey)
+	file_name = 'privatKey_' + self.user_address + '.txt'
+	with open(file_name, 'w') as ck_file:
+		ck_file.write(str_privatKey)
+	self.w3.personal.unlockAccount(self.user_address, self.password)
+	self.w3.eth.defaultAccount = self.user_address
+	tx = self.ws.functions.check_in(name, str_publicKey).transact({'gas': 900000})
+	self.w3.miner.start(1)
+	self.w3.eth.waitForTransactionReceipt(tx)
+	self.w3.miner.stop()

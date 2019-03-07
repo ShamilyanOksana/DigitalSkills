@@ -1,0 +1,24 @@
+    def show_all_files_for_user(self):
+        user = self.get_user_by_user_address(self.user_address)
+        if user[2] == 0:
+            number = self.files_number()
+            answer = []
+            for i in range(number):
+                new_answer = []
+                info = self.ws.functions.get_file_2(i).call()
+                if str(info[-1]) != '0':
+                    file = self.get_file_by_id(i)
+                    for j in range(len(file)):
+                        new_answer.append(str(file[j]))
+                    answer.append(new_answer)
+            return answer
+        elif user[2] == 1 or user[2] == 3:
+            number = self.files_number()
+            answer = []
+            for i in range(number):
+                file = self.get_file_by_id(i)
+                if str(file[0]) != '0' and str(file[1]) != '' and str(file[2]) != '':
+                    for j in range(len(file)):
+                        file[j] = str(file[j])
+                answer.append(file)
+            return answer

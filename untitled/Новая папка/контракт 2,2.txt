@@ -1,0 +1,269 @@
+pragma solidity ^0.5.0;
+contract Store {
+
+    struct User {
+        address user_address;
+        string name;
+        uint category;
+            //1 - прочая тайна
+            //2 - коммерческая тайна
+            //3 - общедоступно
+        uint role;
+            //0 - бан
+            //1 - адмиг
+            //2 - библиотекарь
+            //3 - обычный пользователь
+        string open_key;
+    }
+    
+    struct File {
+        uint file_id;
+        string title;
+        string  author;
+        string tipe;
+        uint category;
+        uint period;
+        string  file_hash;
+        address[] viewers;
+        uint[] viewstatus;
+        bool confirmed;
+    }
+    
+    struct FileRequest {
+        uint file_id;
+        uint new_time;
+    }
+    
+    struct Request {
+        address user_address;
+        uint new_role;
+        uint new_category;
+    }
+    
+    Request[] requests;
+    File[] files;
+    User[] users;
+    FileRequest[] filerequests;
+    
+    uint Etherium_speed = 14;
+    
+    constructor() public {
+        users.push(User(0x0000000000000000000000000000000000000000, "0", 0, 0, "000"));
+    }
+    
+    modifier isAdmin {
+        uint user_id = get_user_id_by_user_address(msg.sender);
+        require(users[user_id].role == 1, "not admin");
+        _;
+    }  
+    
+    modifier isLibr {
+        uint user_id = get_user_id_by_user_address(msg.sender);
+        require(users[user_id].role == 2, "not librarian");
+        _;
+    }
+    
+    //Создать 2 админа, 2 библиотекаря
+    function admin_genesis(address admin_address, string memory name, string memory open_key) public {
+        users.push(User(admin_address, name, 3, 1, open_key));
+    }
+    
+    function libr_genesis(address libr_address, string memory name, string memory open_key) public {
+        users.push(User(libr_address, name, 0, 2, open_key));
+    }
+    
+    //Получить номер пользователя по адресу - Работает
+    function get_user_id_by_user_address(address user_address) public view returns(uint user_id) {
+        for (uint i=0; i<users.length; i++) {
+            if (users[i].user_address == user_address) {
+                return i;
+            }
+        }
+        return 0;
+    }
+    
+    function get_user_number() public view returns(uint) {
+        return users.length;
+    }
+    
+    //Получить информацию о пользователе по его адресу - Работает
+    function get_user_by_user_address(address user_address) public view returns(address, string memory, uint, uint, string memory) {
+        for (uint i=0; i<users.length; i++) {
+            if (users[i].user_address == user_address) {
+                return(users[i].user_address, users[i].name, users[i].category, users[i].role, users[i].open_key);
+            }
+        }
+    }
+    
+    //Получить информацию о пользователе по его номеру - Работает
+    function get_user_by_user_id(uint user_id) public view returns(address, string memory, uint, uint, string memory) {
+        return(users[user_id].user_address, users[user_id].name, users[user_id].category, users[user_id].role, users[user_id].open_key);
+    }
+    
+    //Получить количество запросов - Работает
+    function get_request_number() public view returns(uint) {
+        return requests.length;
+    }
+    
+    //Получить конкретный запрос
+    function get_request_by_request_number(uint request_number) public view returns(address, uint, uint) {
+        return(requests[request_number].user_address, requests[request_number].new_role, requests[request_number].new_category);
+    }
+    
+    //Получить номер запроса новой роли по адресу пользователя и по указаной роли - Работает
+    function get_role_request_id_by_user_address(address user_address, uint new_role) public view returns(uint) {
+        for (uint i=0; i<requests.length; i++) {
+            if (requests[i].user_address == user_address && requests[i].new_role == new_role) {
+                return i;
+            }
+        }
+    }
+    
+    //Получить номер запроса новой категории по адресу пользователя -
+    function get_category_request_id_by_user_address(address user_address) public view returns(uint) {
+        for (uint i=0; i<requests.length; i++) {
+            if (requests[i].user_address == user_address && requests[i].new_category == 2) {
+                return i;
+            }
+        }
+    }
+    
+    //Получить количество файлов
+    function get_file_number() public view returns(uint) {
+        return files.length;
+    }
+    
+    //Получить количество запросов продления времени
+    function get_filerequest_number() public view returns(uint) {
+        return filerequests.length;
+    }
+    
+    function get_filerequest(uint filerequest_number) public view returns(uint file_id, uint new_time) {
+        return(filerequests[filerequest_number].file_id, filerequests[filerequest_number].new_time);
+    }
+    
+    //Получить запрос продления по файлID
+    function get_filerequest_by_file_id(uint file_id) public view returns(uint, uint) {
+        for (uint i = 0; i<filerequests.length; i++) {
+            if (filerequests[i].file_id == file_id) {
+                return(filerequests[i].file_id, filerequests[i].new_time);
+            }
+        }
+    }
+    
+    //Получить файлреквкстID по файлID
+    function get_filerequestID_by_file_id(uint file_id) public view returns(uint) {
+        for (uint i = 0; i<filerequests.length; i++) {
+            if (filerequests[i].file_id == file_id) {
+                return i;
+            }
+        }
+    }
+    
+    //Получить файл по файл ID
+    function get_file_1(uint file_id) public view returns(uint id, string memory title, string memory  author, string memory tipe, 
+    uint category, uint period, string memory file_hash) {
+        return (files[file_id].file_id, files[file_id].title, files[file_id].author, files[file_id].tipe, files[file_id].category, 
+        files[file_id].period, files[file_id].file_hash);
+    }
+    /*
+    function get_file_2(uint file_id) public view returns(uint id, address[] memory viewers, uint[] memory viewstatus, bool confirmed) {
+        return (files[file_id].file_id, files[file_id].viewers[], files[file_id].viewstatus[], files[file_id].confirmedS);
+    }
+*/
+    
+    //Регистрация в системе - Работает
+    function check_in(string memory name, string memory open_key) public {
+        uint user_id = get_user_id_by_user_address(msg.sender);
+        if (user_id == 0) {
+            users.push(User(msg.sender, name, 3, 3, open_key));
+        }
+        else {
+            require(users[user_id].role != 0, "You'ra locked by admin");
+            users[user_id].open_key = open_key;
+            users[user_id].name = name;
+            users[user_id].category = 3;
+            users[user_id].role = 3;
+        }
+    }
+    
+
+    //Запрос на внесение общедоступного файла в архив
+    function create_file_3(string memory title, string memory tipe, string memory file_hash) public {
+        uint user_id = get_user_id_by_user_address(msg.sender);
+        string memory author = users[user_id].name;
+        address[] memory viewers;
+        uint[] memory view_status;
+        files.push(File(files.length, title, author, tipe, 3, 0, file_hash, viewers, view_status, false));
+    }
+    
+    //Разрешить опубликовать общедоступный файл
+    function confirm_print_3(uint file_id) public isLibr {
+        files[file_id].confirmed = true;
+    }
+    
+    //Запретить публиковать общедоступный файл 
+    function refuse_print_3(uint file_id) public isLibr {
+        delete files[file_id];
+    }
+    
+    
+    
+    //Занести файл первой категории в архив (прочая тайна)
+    function create_file_1(string memory title, string memory tipe, string memory file_hash) public isLibr {
+        address[] memory viewers;
+        uint[] memory view_status;
+        files.push(File(files.length, title, "", tipe, 1, 0, file_hash, viewers, view_status, true));
+    }
+    
+    
+    
+    //Запрос на внесение коммерческой тайны в архив (категория 2)
+    function create_file_2(string memory title, string memory tipe, uint period, string memory file_hash) public {
+        uint user_id = get_user_id_by_user_address(msg.sender);
+        string memory author = users[user_id].name;
+        address[] memory viewers;
+        uint[] memory view_status;
+        files.push(File(files.length, title, author, tipe, 2, period, file_hash, viewers, view_status, false));
+    }
+    
+    //Разрешить опубликовать коммерческую тайну
+    function confirm_print_2(uint file_id) public isLibr {
+        files[file_id].period = block.number + (files[file_id].period*86400) / Etherium_speed;
+        files[file_id].confirmed = true;
+    }
+    
+    //Запретить публиковать коммерческую тайну
+    function refuse_print_2(uint file_id) public isLibr {
+        delete files[file_id];
+    }
+
+    //Запросить продление срока хранения коммерческой тайны
+    function request_longer(uint file_id, uint new_time) public {
+        //uint user_id = get_user_id_by_user_address(msg.sender);
+        //require(msg.sender == files[file_id].author);
+        filerequests.push(FileRequest(file_id, new_time));
+    }
+
+    //Продлить время для файла коммерческой тайны
+    function make_longer(uint file_id) public isLibr {
+        uint filerequest_id = get_filerequestID_by_file_id(file_id);
+        files[file_id].period = (files[file_id].period + filerequests[filerequest_id].new_time)*86400 / Etherium_speed;
+    }
+    
+    //Отказать в продлении время для файла коммерческой тайны
+    function dont_make_longer(uint file_id) public isLibr {
+        uint filerequest_id = get_filerequestID_by_file_id(file_id);
+        delete filerequests[filerequest_id];
+    }
+    
+    //Назначить категорию 3
+    function set_category_3(uint file_id) public {
+        files[file_id].category = 3;
+        files[file_id].period = 0;
+    }
+    
+    
+    
+    
+}
