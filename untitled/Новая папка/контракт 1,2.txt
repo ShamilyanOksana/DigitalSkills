@@ -1,18 +1,18 @@
-pragma solidity ^0.5.0;
+п»їpragma solidity ^0.5.0;
 contract Store {
 
     struct User {
         address user_address;
         string name;
         uint category;
-            //1 - прочая тайна
-            //2 - коммерческая тайна
-            //3 - общедоступно
+            //1 - РїСЂРѕС‡Р°СЏ С‚Р°Р№РЅР°
+            //2 - РєРѕРјРјРµСЂС‡РµСЃРєР°СЏ С‚Р°Р№РЅР°
+            //3 - РѕР±С‰РµРґРѕСЃС‚СѓРїРЅРѕ
         uint role;
-            //0 - бан
-            //1 - адмиг
-            //2 - библиотекарь
-            //3 - обычный пользователь
+            //0 - Р±Р°РЅ
+            //1 - Р°РґРјРёРі
+            //2 - Р±РёР±Р»РёРѕС‚РµРєР°СЂСЊ
+            //3 - РѕР±С‹С‡РЅС‹Р№ РїРѕР»СЊР·РѕРІР°С‚РµР»СЊ
         string open_key;
     }
     
@@ -53,7 +53,7 @@ contract Store {
         _;
     }
     
-    //Создать 2 админа, 2 библиотекаря
+    //РЎРѕР·РґР°С‚СЊ 2 Р°РґРјРёРЅР°, 2 Р±РёР±Р»РёРѕС‚РµРєР°СЂСЏ
     /*function admin_genesis(address admin_address, uint open_key) public {
         users.push(User(admin_address, 3, 1, open_key));
     }*/
@@ -62,7 +62,7 @@ contract Store {
         users.push(User(libr_address, name, 0, 2, open_key));
     }
     
-    //Получить номер пользователя по адресу - Работает
+    //РџРѕР»СѓС‡РёС‚СЊ РЅРѕРјРµСЂ РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ РїРѕ Р°РґСЂРµСЃСѓ - Р Р°Р±РѕС‚Р°РµС‚
     function get_user_id_by_user_address(address user_address) public view returns(uint user_id) {
         for (uint i=0; i<users.length; i++) {
             if (users[i].user_address == user_address) {
@@ -72,7 +72,7 @@ contract Store {
         return 0;
     }
     
-    //Получить информацию о пользователе по его адресу - Работает
+    //РџРѕР»СѓС‡РёС‚СЊ РёРЅС„РѕСЂРјР°С†РёСЋ Рѕ РїРѕР»СЊР·РѕРІР°С‚РµР»Рµ РїРѕ РµРіРѕ Р°РґСЂРµСЃСѓ - Р Р°Р±РѕС‚Р°РµС‚
     function get_user_by_user_address(address user_address) public view returns(address, uint, uint/*, string*/) {
         for (uint i=0; i<users.length; i++) {
             if (users[i].user_address == user_address) {
@@ -81,17 +81,17 @@ contract Store {
         }
     }
     
-    //Получить количество запросов - Работает
+    //РџРѕР»СѓС‡РёС‚СЊ РєРѕР»РёС‡РµСЃС‚РІРѕ Р·Р°РїСЂРѕСЃРѕРІ - Р Р°Р±РѕС‚Р°РµС‚
     function get_request_number() public view returns(uint) {
         return requests.length;
     }
     
-    //Получить конкретный запрос
+    //РџРѕР»СѓС‡РёС‚СЊ РєРѕРЅРєСЂРµС‚РЅС‹Р№ Р·Р°РїСЂРѕСЃ
     function get_request_by_request_number(uint request_number) public view returns(address, uint, uint) {
         return(requests[request_number].user_address, requests[request_number].new_role, requests[request_number].new_category);
     }
     
-    //Получить номер запроса новой роли по адресу пользователя и по указаной роли - Работает
+    //РџРѕР»СѓС‡РёС‚СЊ РЅРѕРјРµСЂ Р·Р°РїСЂРѕСЃР° РЅРѕРІРѕР№ СЂРѕР»Рё РїРѕ Р°РґСЂРµСЃСѓ РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ Рё РїРѕ СѓРєР°Р·Р°РЅРѕР№ СЂРѕР»Рё - Р Р°Р±РѕС‚Р°РµС‚
     function get_role_request_id_by_user_address(address user_address, uint new_role) public view returns(uint) {
         for (uint i=0; i<requests.length; i++) {
             if (requests[i].user_address == user_address && requests[i].new_role == new_role) {
@@ -100,7 +100,7 @@ contract Store {
         }
     }
     
-    //Получить номер запроса новой категории по адресу пользователя -
+    //РџРѕР»СѓС‡РёС‚СЊ РЅРѕРјРµСЂ Р·Р°РїСЂРѕСЃР° РЅРѕРІРѕР№ РєР°С‚РµРіРѕСЂРёРё РїРѕ Р°РґСЂРµСЃСѓ РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ -
     function get_category_request_id_by_user_address(address user_address) public view returns(uint) {
         for (uint i=0; i<requests.length; i++) {
             if (requests[i].user_address == user_address && requests[i].new_category == 2) {
@@ -111,7 +111,7 @@ contract Store {
     
     
     
-    //Регистрация в системе - Работает
+    //Р РµРіРёСЃС‚СЂР°С†РёСЏ РІ СЃРёСЃС‚РµРјРµ - Р Р°Р±РѕС‚Р°РµС‚
     function check_in(string memory name, string memory open_key) public {
         uint user_id = get_user_id_by_user_address(msg.sender);
         if (user_id == 0) {
@@ -125,26 +125,26 @@ contract Store {
         }
     }
     
-    //Удаление из системы - Работает
+    //РЈРґР°Р»РµРЅРёРµ РёР· СЃРёСЃС‚РµРјС‹ - Р Р°Р±РѕС‚Р°РµС‚
     function delete_user(address user_address) public isAdmin {
         users[get_user_id_by_user_address(user_address)].role = 0;
     }
     
-    //Запросить права администратора - Работает
+    //Р—Р°РїСЂРѕСЃРёС‚СЊ РїСЂР°РІР° Р°РґРјРёРЅРёСЃС‚СЂР°С‚РѕСЂР° - Р Р°Р±РѕС‚Р°РµС‚
     function request_admin_rights() public {
         uint user_id = get_user_id_by_user_address(msg.sender);
         require(users[user_id].role == 3, "This role can't be given to you");
         requests.push(Request(msg.sender, 1, 0));
     }
     
-    //Запросить права библиотекаря - Работает
+    //Р—Р°РїСЂРѕСЃРёС‚СЊ РїСЂР°РІР° Р±РёР±Р»РёРѕС‚РµРєР°СЂСЏ - Р Р°Р±РѕС‚Р°РµС‚
     function request_librarian_rights() public {
         uint user_id = get_user_id_by_user_address(msg.sender);
         require(users[user_id].role == 3, "This role can't be given to you");
         requests.push(Request(msg.sender, 2, 0));
     }
     
-    //Установить новые права пользователю - Работает
+    //РЈСЃС‚Р°РЅРѕРІРёС‚СЊ РЅРѕРІС‹Рµ РїСЂР°РІР° РїРѕР»СЊР·РѕРІР°С‚РµР»СЋ - Р Р°Р±РѕС‚Р°РµС‚
     function confirm_rights(address user_address, uint new_role) public isAdmin {
         uint request_id = get_role_request_id_by_user_address(user_address, new_role);
         uint user_id = get_user_id_by_user_address(user_address);
@@ -152,7 +152,7 @@ contract Store {
         delete requests[request_id];
     }
     
-    //Отказать в установлении новых прав - Работает
+    //РћС‚РєР°Р·Р°С‚СЊ РІ СѓСЃС‚Р°РЅРѕРІР»РµРЅРёРё РЅРѕРІС‹С… РїСЂР°РІ - Р Р°Р±РѕС‚Р°РµС‚
     function refuse_rights(address user_address, uint new_role) public isAdmin {
         uint request_id = get_role_request_id_by_user_address(user_address, new_role);
         delete requests[request_id];
@@ -160,14 +160,14 @@ contract Store {
     
     
     
-    //Запросить доступ к категории 1
+    //Р—Р°РїСЂРѕСЃРёС‚СЊ РґРѕСЃС‚СѓРї Рє РєР°С‚РµРіРѕСЂРёРё 1
     function request_access_to_other() public {
         uint user_id = get_user_id_by_user_address(msg.sender);
         require(users[user_id].category == 1, "You've alredy had this category");
         requests.push(Request(msg.sender, 0, 1));
     }
     
-    //Разрешить доступ к первой категории - Работает
+    //Р Р°Р·СЂРµС€РёС‚СЊ РґРѕСЃС‚СѓРї Рє РїРµСЂРІРѕР№ РєР°С‚РµРіРѕСЂРёРё - Р Р°Р±РѕС‚Р°РµС‚
     function confirm_access_to_other(address user_address) public isAdmin {
         uint request_id = get_category_request_id_by_user_address(user_address);
         uint user_id = get_user_id_by_user_address(user_address);
@@ -176,7 +176,7 @@ contract Store {
         delete(requests[request_id]);
     }
     
-    //Отказать в доступе к первой категории - Работает
+    //РћС‚РєР°Р·Р°С‚СЊ РІ РґРѕСЃС‚СѓРїРµ Рє РїРµСЂРІРѕР№ РєР°С‚РµРіРѕСЂРёРё - Р Р°Р±РѕС‚Р°РµС‚
     function refuse_access_to_other(address user_address) public isAdmin {
         uint request_id = get_category_request_id_by_user_address(user_address);
         require(msg.sender != user_address, "You can refuse an access for othet files for youself");
@@ -185,7 +185,7 @@ contract Store {
     
     
     
-    //Запрос на внесение общедоступного файла в архив
+    //Р—Р°РїСЂРѕСЃ РЅР° РІРЅРµСЃРµРЅРёРµ РѕР±С‰РµРґРѕСЃС‚СѓРїРЅРѕРіРѕ С„Р°Р№Р»Р° РІ Р°СЂС…РёРІ
     function create_file_3(string memory title, uint tipe, string memory file_hash) public {
         uint user_id = get_user_id_by_user_address(msg.sender);
         string memory author = users[user_id].name;
@@ -195,18 +195,18 @@ contract Store {
         files.push(File(files.length, title, author, tipe, 3, 0, file_hash, viewtime, viewers, view_status, false));
     }
     
-    //Разрешить опубликовать общедоступный файл
+    //Р Р°Р·СЂРµС€РёС‚СЊ РѕРїСѓР±Р»РёРєРѕРІР°С‚СЊ РѕР±С‰РµРґРѕСЃС‚СѓРїРЅС‹Р№ С„Р°Р№Р»
     function confirm_print_3(uint file_id) public isLibr {
         files[file_id].confirmed = true;
     }
     
-    //Запретить публиковать общедоступный файл 
+    //Р—Р°РїСЂРµС‚РёС‚СЊ РїСѓР±Р»РёРєРѕРІР°С‚СЊ РѕР±С‰РµРґРѕСЃС‚СѓРїРЅС‹Р№ С„Р°Р№Р» 
     function refuse_print_3(uint file_id) public isLibr {
         delete files[file_id];
     }
     
     
-    //Занести файл первой категории в архив (прочая тайна)
+    //Р—Р°РЅРµСЃС‚Рё С„Р°Р№Р» РїРµСЂРІРѕР№ РєР°С‚РµРіРѕСЂРёРё РІ Р°СЂС…РёРІ (РїСЂРѕС‡Р°СЏ С‚Р°Р№РЅР°)
     
     
     

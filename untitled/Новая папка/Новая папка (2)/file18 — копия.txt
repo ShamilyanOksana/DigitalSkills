@@ -1,0 +1,17 @@
+>>> web3.admin.nodeInfo
+{
+    'enode': 'enode://e54eebad24dce1f6d246bea455ffa756d97801582420b9ed681a2ea84bf376d0bd87ae8dd6dc06cdb862a2ca89ecabe1be1050be35b4e70d62bc1a092cb7e2d3@[::]:30303',
+    'id': 'e54eebad24dce1f6d246bea455ffa756d97801582420b9ed681a2ea84bf376d0bd87ae8dd6dc06cdb862a2ca89ecabe1be1050be35b4e70d62bc1a092cb7e2d3',
+    'ip': '::',
+    'listenAddr': '[::]:30303',
+    'name': 'Geth/v1.4.11-stable-fed692f6/darwin/go1.7',
+    'ports': {'discovery': 30303, 'listener': 30303},
+    'protocols': {
+        'eth': {
+            'difficulty': 57631175724744612603,
+            'genesis': '0xd4e56740f876aef8c010b86a40d5f56745a118d0906a34e69aec8c0db1cb8fa3',
+            'head': '0xaaef6b9dd0d34088915f4c62b6c166379da2ad250a88f76955508f7cc81fb796',
+            'network': 1,
+        },
+    },
+}

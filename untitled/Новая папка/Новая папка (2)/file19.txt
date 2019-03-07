@@ -1,0 +1,8 @@
+Delegates to admin_startWS RPC Method
+Starts the Websocket based JSON RPC API webserver on the specified 
+host and port, with the rpccorsdomain set to the provided cors value 
+and with the APIs specified by apis enabled. Returns boolean as to 
+whether the server was successfully started.
+
+>>> web3.admin.startWS()
+True

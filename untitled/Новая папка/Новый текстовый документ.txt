@@ -1,4 +1,4 @@
- function create_file_1(string memory title, string memory tipe, string memory file_hash) public isLibr {
+п»ї function create_file_1(string memory title, string memory tipe, string memory file_hash) public isLibr {
         uint user_id = get_user_id_by_user_address(msg.sender);
         string memory author = users[user_id].name;
         address[] memory viewers;
@@ -6,7 +6,7 @@
         files.push(File(files.length, title, author, tipe, 1, 0, file_hash, viewers, view_status, true));
     }
 
-//доступ к категории 1 - Работает
+//РґРѕСЃС‚СѓРї Рє РєР°С‚РµРіРѕСЂРёРё 1 - Р Р°Р±РѕС‚Р°РµС‚
     function access_to_other(address user_address) public {
         uint user_id = get_user_id_by_user_address(user_address);
         //require(users[user_id].category != 1, "You've alredy had this category");

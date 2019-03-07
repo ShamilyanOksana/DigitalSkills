@@ -1,18 +1,18 @@
-pragma solidity ^0.5.0;
+п»їpragma solidity ^0.5.0;
 contract Store {
 
     struct User {
         address user_address;
         string name;
         uint category;
-            //1 - прочая тайна
-            //2 - коммерческая тайна
-            //3 - общедоступно
+            //1 - РїСЂРѕС‡Р°СЏ С‚Р°Р№РЅР°
+            //2 - РєРѕРјРјРµСЂС‡РµСЃРєР°СЏ С‚Р°Р№РЅР°
+            //3 - РѕР±С‰РµРґРѕСЃС‚СѓРїРЅРѕ
         uint role;
-            //0 - бан
-            //1 - адмиг
-            //2 - библиотекарь
-            //3 - обычный пользователь
+            //0 - Р±Р°РЅ
+            //1 - Р°РґРјРёРі
+            //2 - Р±РёР±Р»РёРѕС‚РµРєР°СЂСЊ
+            //3 - РѕР±С‹С‡РЅС‹Р№ РїРѕР»СЊР·РѕРІР°С‚РµР»СЊ
         string open_key;
     }
     
@@ -63,7 +63,7 @@ contract Store {
         _;
     }
     
-    //Создать 2 админа, 2 библиотекаря
+    //РЎРѕР·РґР°С‚СЊ 2 Р°РґРјРёРЅР°, 2 Р±РёР±Р»РёРѕС‚РµРєР°СЂСЏ
     function admin_genesis(address admin_address, string memory name, string memory open_key) public {
         users.push(User(admin_address, name, 3, 1, open_key));
     }
@@ -72,7 +72,7 @@ contract Store {
         users.push(User(libr_address, name, 0, 2, open_key));
     }
     
-    //Получить номер пользователя по адресу - Работает
+    //РџРѕР»СѓС‡РёС‚СЊ РЅРѕРјРµСЂ РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ РїРѕ Р°РґСЂРµСЃСѓ - Р Р°Р±РѕС‚Р°РµС‚
     function get_user_id_by_user_address(address user_address) public view returns(uint user_id) {
         for (uint i=0; i<users.length; i++) {
             if (users[i].user_address == user_address) {
@@ -86,7 +86,7 @@ contract Store {
         return users.length;
     }
     
-    //Получить информацию о пользователе по его адресу - Работает
+    //РџРѕР»СѓС‡РёС‚СЊ РёРЅС„РѕСЂРјР°С†РёСЋ Рѕ РїРѕР»СЊР·РѕРІР°С‚РµР»Рµ РїРѕ РµРіРѕ Р°РґСЂРµСЃСѓ - Р Р°Р±РѕС‚Р°РµС‚
     function get_user_by_user_address(address user_address) public view returns(address, string memory, uint, uint, string memory) {
         for (uint i=0; i<users.length; i++) {
             if (users[i].user_address == user_address) {
@@ -95,22 +95,22 @@ contract Store {
         }
     }
     
-    //Получить информацию о пользователе по его номеру - Работает
+    //РџРѕР»СѓС‡РёС‚СЊ РёРЅС„РѕСЂРјР°С†РёСЋ Рѕ РїРѕР»СЊР·РѕРІР°С‚РµР»Рµ РїРѕ РµРіРѕ РЅРѕРјРµСЂСѓ - Р Р°Р±РѕС‚Р°РµС‚
     function get_user_by_user_id(uint user_id) public view returns(address, string memory, uint, uint, string memory) {
         return(users[user_id].user_address, users[user_id].name, users[user_id].category, users[user_id].role, users[user_id].open_key);
     }
     
-    //Получить количество запросов - Работает
+    //РџРѕР»СѓС‡РёС‚СЊ РєРѕР»РёС‡РµСЃС‚РІРѕ Р·Р°РїСЂРѕСЃРѕРІ - Р Р°Р±РѕС‚Р°РµС‚
     function get_request_number() public view returns(uint) {
         return requests.length;
     }
     
-    //Получить конкретный запрос
+    //РџРѕР»СѓС‡РёС‚СЊ РєРѕРЅРєСЂРµС‚РЅС‹Р№ Р·Р°РїСЂРѕСЃ
     function get_request_by_request_number(uint request_number) public view returns(address, uint, uint) {
         return(requests[request_number].user_address, requests[request_number].new_role, requests[request_number].new_category);
     }
     
-    //Получить номер запроса новой роли по адресу пользователя и по указаной роли - Работает
+    //РџРѕР»СѓС‡РёС‚СЊ РЅРѕРјРµСЂ Р·Р°РїСЂРѕСЃР° РЅРѕРІРѕР№ СЂРѕР»Рё РїРѕ Р°РґСЂРµСЃСѓ РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ Рё РїРѕ СѓРєР°Р·Р°РЅРѕР№ СЂРѕР»Рё - Р Р°Р±РѕС‚Р°РµС‚
     function get_role_request_id_by_user_address(address user_address, uint new_role) public view returns(uint) {
         for (uint i=0; i<requests.length; i++) {
             if (requests[i].user_address == user_address && requests[i].new_role == new_role) {
@@ -119,7 +119,7 @@ contract Store {
         }
     }
     
-    //Получить номер запроса новой категории по адресу пользователя -
+    //РџРѕР»СѓС‡РёС‚СЊ РЅРѕРјРµСЂ Р·Р°РїСЂРѕСЃР° РЅРѕРІРѕР№ РєР°С‚РµРіРѕСЂРёРё РїРѕ Р°РґСЂРµСЃСѓ РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ -
     function get_category_request_id_by_user_address(address user_address) public view returns(uint) {
         for (uint i=0; i<requests.length; i++) {
             if (requests[i].user_address == user_address && requests[i].new_category == 2) {
@@ -128,12 +128,12 @@ contract Store {
         }
     }
     
-    //Получить количество файлов
+    //РџРѕР»СѓС‡РёС‚СЊ РєРѕР»РёС‡РµСЃС‚РІРѕ С„Р°Р№Р»РѕРІ
     function get_file_number() public view returns(uint) {
         return files.length;
     }
     
-    //Получить количество запросов продления времени
+    //РџРѕР»СѓС‡РёС‚СЊ РєРѕР»РёС‡РµСЃС‚РІРѕ Р·Р°РїСЂРѕСЃРѕРІ РїСЂРѕРґР»РµРЅРёСЏ РІСЂРµРјРµРЅРё
     function get_filerequest_number() public view returns(uint) {
         return filerequests.length;
     }
@@ -142,7 +142,7 @@ contract Store {
         return(filerequests[filerequest_number].file_id, filerequests[filerequest_number].new_time);
     }
     
-    //Получить запрос продления по файлID
+    //РџРѕР»СѓС‡РёС‚СЊ Р·Р°РїСЂРѕСЃ РїСЂРѕРґР»РµРЅРёСЏ РїРѕ С„Р°Р№Р»ID
     function get_filerequest_by_file_id(uint file_id) public view returns(uint, uint) {
         for (uint i = 0; i<filerequests.length; i++) {
             if (filerequests[i].file_id == file_id) {
@@ -151,7 +151,7 @@ contract Store {
         }
     }
     
-    //Получить файлреквкстID по файлID
+    //РџРѕР»СѓС‡РёС‚СЊ С„Р°Р№Р»СЂРµРєРІРєСЃС‚ID РїРѕ С„Р°Р№Р»ID
     function get_filerequestID_by_file_id(uint file_id) public view returns(uint) {
         for (uint i = 0; i<filerequests.length; i++) {
             if (filerequests[i].file_id == file_id) {
@@ -160,7 +160,7 @@ contract Store {
         }
     }
     
-    //Получить файл по файл ID
+    //РџРѕР»СѓС‡РёС‚СЊ С„Р°Р№Р» РїРѕ С„Р°Р№Р» ID
     function get_file_1(uint file_id) public view returns(uint id, string memory title, string memory  author, string memory tipe, 
     uint category, uint period, string memory file_hash) {
         return (files[file_id].file_id, files[file_id].title, files[file_id].author, files[file_id].tipe, files[file_id].category, 
@@ -172,7 +172,7 @@ contract Store {
     }
 */
     
-    //Регистрация в системе - Работает
+    //Р РµРіРёСЃС‚СЂР°С†РёСЏ РІ СЃРёСЃС‚РµРјРµ - Р Р°Р±РѕС‚Р°РµС‚
     function check_in(string memory name, string memory open_key) public {
         uint user_id = get_user_id_by_user_address(msg.sender);
         if (user_id == 0) {
@@ -188,7 +188,7 @@ contract Store {
     }
     
 
-    //Запрос на внесение общедоступного файла в архив
+    //Р—Р°РїСЂРѕСЃ РЅР° РІРЅРµСЃРµРЅРёРµ РѕР±С‰РµРґРѕСЃС‚СѓРїРЅРѕРіРѕ С„Р°Р№Р»Р° РІ Р°СЂС…РёРІ
     function create_file_3(string memory title, string memory tipe, string memory file_hash) public {
         uint user_id = get_user_id_by_user_address(msg.sender);
         string memory author = users[user_id].name;
@@ -197,19 +197,19 @@ contract Store {
         files.push(File(files.length, title, author, tipe, 3, 0, file_hash, viewers, view_status, false));
     }
     
-    //Разрешить опубликовать общедоступный файл
+    //Р Р°Р·СЂРµС€РёС‚СЊ РѕРїСѓР±Р»РёРєРѕРІР°С‚СЊ РѕР±С‰РµРґРѕСЃС‚СѓРїРЅС‹Р№ С„Р°Р№Р»
     function confirm_print_3(uint file_id) public isLibr {
         files[file_id].confirmed = true;
     }
     
-    //Запретить публиковать общедоступный файл 
+    //Р—Р°РїСЂРµС‚РёС‚СЊ РїСѓР±Р»РёРєРѕРІР°С‚СЊ РѕР±С‰РµРґРѕСЃС‚СѓРїРЅС‹Р№ С„Р°Р№Р» 
     function refuse_print_3(uint file_id) public isLibr {
         delete files[file_id];
     }
     
     
     
-    //Занести файл первой категории в архив (прочая тайна)
+    //Р—Р°РЅРµСЃС‚Рё С„Р°Р№Р» РїРµСЂРІРѕР№ РєР°С‚РµРіРѕСЂРёРё РІ Р°СЂС…РёРІ (РїСЂРѕС‡Р°СЏ С‚Р°Р№РЅР°)
     function create_file_1(string memory title, string memory tipe, string memory file_hash) public isLibr {
         address[] memory viewers;
         uint[] memory view_status;
@@ -218,7 +218,7 @@ contract Store {
     
     
     
-    //Запрос на внесение коммерческой тайны в архив (категория 2)
+    //Р—Р°РїСЂРѕСЃ РЅР° РІРЅРµСЃРµРЅРёРµ РєРѕРјРјРµСЂС‡РµСЃРєРѕР№ С‚Р°Р№РЅС‹ РІ Р°СЂС…РёРІ (РєР°С‚РµРіРѕСЂРёСЏ 2)
     function create_file_2(string memory title, string memory tipe, uint period, string memory file_hash) public {
         uint user_id = get_user_id_by_user_address(msg.sender);
         string memory author = users[user_id].name;
@@ -227,37 +227,37 @@ contract Store {
         files.push(File(files.length, title, author, tipe, 2, period, file_hash, viewers, view_status, false));
     }
     
-    //Разрешить опубликовать коммерческую тайну
+    //Р Р°Р·СЂРµС€РёС‚СЊ РѕРїСѓР±Р»РёРєРѕРІР°С‚СЊ РєРѕРјРјРµСЂС‡РµСЃРєСѓСЋ С‚Р°Р№РЅСѓ
     function confirm_print_2(uint file_id) public isLibr {
         files[file_id].period = block.number + (files[file_id].period*86400) / Etherium_speed;
         files[file_id].confirmed = true;
     }
     
-    //Запретить публиковать коммерческую тайну
+    //Р—Р°РїСЂРµС‚РёС‚СЊ РїСѓР±Р»РёРєРѕРІР°С‚СЊ РєРѕРјРјРµСЂС‡РµСЃРєСѓСЋ С‚Р°Р№РЅСѓ
     function refuse_print_2(uint file_id) public isLibr {
         delete files[file_id];
     }
 
-    //Запросить продление срока хранения коммерческой тайны
+    //Р—Р°РїСЂРѕСЃРёС‚СЊ РїСЂРѕРґР»РµРЅРёРµ СЃСЂРѕРєР° С…СЂР°РЅРµРЅРёСЏ РєРѕРјРјРµСЂС‡РµСЃРєРѕР№ С‚Р°Р№РЅС‹
     function request_longer(uint file_id, uint new_time) public {
         //uint user_id = get_user_id_by_user_address(msg.sender);
         //require(msg.sender == files[file_id].author);
         filerequests.push(FileRequest(file_id, new_time));
     }
 
-    //Продлить время для файла коммерческой тайны
+    //РџСЂРѕРґР»РёС‚СЊ РІСЂРµРјСЏ РґР»СЏ С„Р°Р№Р»Р° РєРѕРјРјРµСЂС‡РµСЃРєРѕР№ С‚Р°Р№РЅС‹
     function make_longer(uint file_id) public isLibr {
         uint filerequest_id = get_filerequestID_by_file_id(file_id);
         files[file_id].period = (files[file_id].period + filerequests[filerequest_id].new_time)*86400 / Etherium_speed;
     }
     
-    //Отказать в продлении время для файла коммерческой тайны
+    //РћС‚РєР°Р·Р°С‚СЊ РІ РїСЂРѕРґР»РµРЅРёРё РІСЂРµРјСЏ РґР»СЏ С„Р°Р№Р»Р° РєРѕРјРјРµСЂС‡РµСЃРєРѕР№ С‚Р°Р№РЅС‹
     function dont_make_longer(uint file_id) public isLibr {
         uint filerequest_id = get_filerequestID_by_file_id(file_id);
         delete filerequests[filerequest_id];
     }
     
-    //Назначить категорию 3
+    //РќР°Р·РЅР°С‡РёС‚СЊ РєР°С‚РµРіРѕСЂРёСЋ 3
     function set_category_3(uint file_id) public {
         files[file_id].category = 3;
         files[file_id].period = 0;
